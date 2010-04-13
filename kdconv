@@ -1,0 +1,280 @@
+#!/bin/sh
+#
+# PDF optimizer for Kindle2/DX.
+#
+# Copyright (c) 2010, MIYOKAWA, Nobuyoshi
+#  All rights reserved.
+#
+#  Redistribution and use in source and binary forms, with or without
+#  modification, are permitted provided that the following conditions
+#  are met:
+#
+#  1. Redistributions of source code must retain the above copyright
+#     notice, this list of conditions and the following disclaimer.
+#  2. Redistributions in binary form must reproduce the above copyright
+#     notice, this list of conditions and the following disclaimer in the
+#     documentation and/or other materials provided with the distribution.
+#
+#  THIS SOFTWARE IS PROVIDED BY THE AUTHORS ''AS IS'' AND ANY EXPRESS
+#  OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+#  WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+#  ARE DISCLAIMED.  IN NO EVENT SHALL THE AUTHORS OR CONTRIBUTORS BE
+#  LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
+#  OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT
+#  OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR
+#  BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+#  WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
+#  OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
+#  EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+VERSION=1.0
+
+COPY=${KDCONV_COPY:-0}
+OVERWRITE=${KDCONV_OVERWRITE:-0}
+EJECT=${KDCONV_EJECT:-0}
+DX=${KDCONV_DX:-0}
+KEEPWORKDIR=${KDCONV_KEEPWORKDIR:-0}
+TRIM=${KDCONV_TRIM:-0}
+DEBUG=${KDCONV_DEBUG:-0}
+
+KINDLE_DOC_PATH=/Volumes/Kindle/documents
+GS_DPI=300
+PDF_DPI=96
+PAPERSIZE_X=560
+PAPERSIZE_Y=742
+PAPERSIZE_DX_X=784
+PAPERSIZE_DX_Y=1142
+
+OPTIONS="a:ceotdDKh"
+PROGNAME=`basename $0`
+PDFTK=1
+
+WORKDIR=''
+SRCFILE=''
+DSTFILE=''
+TITLE=''
+AUTHOR=''
+
+usage()
+{
+    cat<<EOM 1>&2
+Usage: ${PROGNAME} [OPTION] input-pdf output-pdf
+
+EOM
+    if [ ${PDFTK} -eq 1 ]; then
+	cat<<EOM 1>&2
+  -a <AUTHOR>   set PDF author
+EOM
+    fi
+    cat<<EOM 1>&2
+  -c            copy if covert finished.
+  -e            eject if copy finished.
+  -o            overwrite output-pdf if already exits.
+  -t            try to trim extra space.
+  -d            convert to Kindle DX.
+EOM
+}
+
+err()
+{
+    local _status=$1; shift
+    echo "${PROGNAME}: $@" 1>&2
+    exit ${_status}
+}
+
+create_workdir()
+{
+    WORKDIR=`mktemp -dt ${PROGNAME}`
+    [ $? -eq 0 ] || err 1 "Can't create temp dir"
+}
+
+cleanup()
+{
+    if [ ${KEEPWORKDIR} -eq 0 ]; then
+	rm -rf ${WORKDIR}
+    fi
+}
+
+prepare()
+{
+    PDFTK=1
+    if ! /usr/bin/which pdftk > /dev/null ; then
+	PDFTK=0
+	OPTIONS=`echo ${OPTIONS} | sed 's/a//'`
+    fi
+}
+
+parseopt()
+{
+    while getopts ${OPTIONS} opt "$@"; do
+	case ${opt} in
+	    a)
+		AUTHOR="${OPTARG}"
+		;;
+            c)
+		COPY=1
+		;;
+            e)
+		EJECT=1
+		;;
+            o)
+		OVERWRITE=1
+		;;
+            t)
+		TRIM=1
+		;;
+            d)
+		DX=1
+		;;
+            D)
+		DEBUG=1
+		;;
+            K)
+		KEEPWORKDIR=1
+		;;
+	    *)
+		usage; exit 0
+		;;
+	esac
+    done
+    shift $((${OPTIND}-1))
+
+    if [ $# != 2 ]; then
+	usage
+        exit 2
+    fi
+
+    SRCFILE=$(cd "$(dirname "${1}")" && pwd)/$(basename "${1}")
+    DSTFILE=$(cd "$(dirname "${2}")" && pwd)/$(basename "${2}")
+    [ -e "${SRCFILE}" ] || err 1 "No such file: ${SRCFILE}"
+    [ ${OVERWRITE} -eq 1 -o ! -e "${DSTFILE}" ] \
+      || err 1 "Already exist: ${DSTFILE}"
+
+    if [ ${DX} -eq 1 ]; then
+	PAPERSIZE_X=${PAPERSIZE_DX_X}
+	PAPERSIZE_Y=${PAPERSIZE_DX_Y}
+    fi
+    TITLE=`basename -s .pdf "${DSTFILE}"`
+}
+
+slice()
+{
+    gs \
+	-dSAFER \
+	-dBATCH \
+	-dNOPAUSE \
+	-r${GS_DPI} \
+	-sDEVICE=jpeg \
+	-dTextAlphaBits=4 \
+	-dGraphicsAlphaBits=4 \
+	-dMaxStripSize=8192 \
+	-sOutputFile="${PROGNAME}.%04d.jpg" \
+	"${SRCFILE}"
+}
+
+conv()
+{
+    local _papersize="${PAPERSIZE_X}x${PAPERSIZE_Y}",\
+          _opt=""
+    [ ${TRIM} -eq 0 ] || _opt="-fuzz 45% -trim +repage"
+
+    for i in *.jpg; do
+	/bin/echo -n '.'
+	out=`basename -s .jpg ${i}`.pdf
+	rm -f ${out}
+	convert \
+	    ${i} \
+	    -type Grayscale \
+	    -colorspace Gray \
+	    -density ${PDF_DPI} \
+	    ${_opt} \
+	    -modulate 110 -gamma 0.3/0.3/0.3 \
+	    -resize ${_papersize} \
+	    -gravity center \
+	    -extent ${_papersize} \
+	    -fill gray \
+	    -draw 'point 0,0' \
+	    -draw "point $((${PAPERSIZE_X}-1)),$((${PAPERSIZE_Y}-1))" \
+	    ${out}
+    done
+    echo ''
+}
+
+join()
+{
+    echo 'concatinating pdf pages.'
+
+    if [ ${PDFTK} -eq 1 ]; then
+	cat <<EOF>PDF_INFO
+InfoKey: Title
+InfoValue: ${TITLE}
+InfoKey: Author
+InfoValue: ${AUTHOR}
+EOF
+	pdftk *.pdf output - | pdftk - update_info PDF_INFO output "${DSTFILE}"
+    else
+	/System/Library/Automator/Combine\ PDF\ Pages.action/Contents/Resources/join.py --output "${DSTFILE}" *.pdf
+    fi
+}
+
+copy()
+{
+    local _target=`basename ${DSTFILE}`
+
+    [ ${COPY} -eq 1 ] || return
+    if [ ! -d ${KINDLE_DOC_PATH} ]; then
+	echo "${PROGNAME}: Warning: Kindle is not connected." 1>&2
+	return
+    fi
+
+    if [ ${OVERWRITE} -eq 0 -a -e "${KINDLE_DOC_PATH}/${_target}" ]; then
+	echo "${PROGNAME}: Warning: Already exist on Kindle: ${_target}" 1>&2
+	return
+    fi
+
+
+    cp "${DSTFILE}" ${KINDLE_DOC_PATH}/
+    [ ${EJECT} -eq 1 ] || return
+    diskutil eject /Volumes/Kindle
+}
+
+d()
+{
+    [ ${DEBUG} -eq 1 ] || return
+
+    cat<<EOF 1>&2
+SRCFILE: ${SRCFILE}
+DSTFILE: ${DSTFILE}
+WORKDIR: ${WORKDIR}
+PAPERSIZE_X: ${PAPERSIZE_X}
+PAPERSIZE_Y: ${PAPERSIZE_Y}
+TITLE: ${TITLE}
+AUTHOR: ${AUTHOR}
+COPY: ${COPY}
+EJECT: ${EJECT}
+OVERWRITE: ${OVERWRITE}
+KEEPWORKDIR: ${KEEPWORKDIR}
+EOF
+}
+
+main()
+{
+    prepare
+    parseopt "$@"
+    create_workdir
+    d
+
+    trap 'cleanup; exit 1' 1 2 3 15
+    (cd ${WORKDIR}; \
+	slice; \
+	conv; \
+	join; \
+	copy; \
+    )
+
+    cleanup
+}
+
+main "$@"
+
+# EOF
