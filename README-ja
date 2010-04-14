@@ -86,6 +86,8 @@ OPTIONS
 
      -d      KindleDX に適したサイズへ変換します。
 
+      -v      バージョンを表示し終了します
+
 
 EXAMPLES
      foo.pdf を bar.pdf として変換するには:
