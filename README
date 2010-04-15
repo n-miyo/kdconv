@@ -1,0 +1,133 @@
+------------------------------------------------------------
+                     README for kdconv
+------------------------------------------------------------
+
+NAME
+     kdconv -- PDF optimizer for Kindle2/DX.
+
+SYNOPSIS
+     kdconv [-a author] [-ceotdK] input-pdf output-pdf
+
+PLATFORM
+     - MacOS X 10.6 and later(earlier version is not tested)
+     - Kindle2(KindleDX is not tested.)
+
+DESCRIPTION
+     kdconv is a program for converting a PDF document into a Kindle
+     friendly format.
+
+     Kindle2 can display PDF documents, but, especially if the file
+     contains data as image format, it is hard to display correctly in
+     some image size.  This program converts a PDF document which is
+     specified as input-pdf into Kindle friendly size and easy-to-read
+     effects, then it produces the result as output-pdf.  Usually this
+     process reduces the file size.
+
+     Kindle2 uses PDF file name which is eliminated tail .pdf as the
+     title name, so you should specify output-pdf with conscious this
+     behavior.
+
+     If pdftk is installed in your environment, this program uses pdftk
+     to embed title meta data into the PDF, which is generated from
+     output-pdf with eliminating tail .pdf.  Also you can embed creator
+     with specifying some option.  With embedding creator, the value
+     will be shown as an author at the file list of Kindle.
+
+     In addition, you can eliminate extra space, and transfer the file
+     into Kindle automatically.
+
+     This program can convert the input-pdf to KindleDX friendly, but
+     this function is not tested because of not my having it.
+
+PREPARATION
+     This program depends on below programs.  Please install them into a
+     directory where in your PATH with using MacPorts so on.
+
+     - ghostscript(8.71 and layer)
+     - ImageMagick(6.6.1 and later)
+     - pdftk(1.12 and later.  Optional)
+
+     For example, if you'd like to install with MacPorts in default
+     setting:
+
+              sudo port install ghostscript ImageMagick pdftk
+
+     As of April 13, 2010, MacPorts can not install pdftk because of gcc
+     build problem which pdftk depends.  There are a link for ver.1.12
+     binary at pdftk web page, so you can use it.  The pdftk web page
+     is:
+
+              <http://www.accesspdf.com/pdftk/>
+
+     If you do not have pdftk, you can not embed an author name into
+     meta data, which is provided by -a option, but other functions work
+     well.
+
+     If you finish installing related programs, you should put kdconv
+     into a PATH searchable directory and set execute attribute.  For
+     example, if you'd like to install /opt/local/bin:
+
+              sudo install kdconv /opt/local/bin
+
+OPTIONS
+     -a AUTHOR
+             Set PDF's creator.  Kindle uses this value as an author.
+             This option is available if pdftk is installed.
+
+     -c      After PDF convert is finished, the converted file will be
+             transferred into Kindle documents directory.  You have to
+             connect Kindle into your Mac beforehand.  If Kindle is not
+             connected, do nothing with showing warning.  If
+             output-pdf contains directory name, this options uses the
+             file name part of it only.
+
+      -e     After copy is finished, this program tries to eject Kindle
+             automatically.  Without -c option, this option has no
+             effect.
+
+      -o     In spite of already existing output-pdf file, this option
+             allows to overwrite it.  If you do not specify this option,
+             and if a file which has same name already exists, this
+             program stops with error messages.
+
+      -t     Tries to eliminate extra space around the input-pdf.
+             Trimmed area will be decided based on corner pixels
+             color.
+
+      -d     Convert to KindleDX friendly size.
+
+      -v     Show version.
+
+
+EXAMPLES
+     Convert foo.pdf to bar.pdf:
+
+              kdconv foo.pdf bar.pdf
+
+     Convert sample.pdf to My document.pdf and copy it to Kindle
+     automatically, then eject Kindle:
+
+              kdconv -c -e sample.pdf My\ document.pdf
+
+     Convert 1.pdf to out.pdf with trimming extra space, and allow to
+     overwrite it if out.pdf already exists:
+
+              kdconv -t -o 1.pdf out.pdf
+
+BUGS
+     Please report bugs to below AUTHOR section's address.
+
+     If an original PDF is created with vector format data, generated
+     file's view area will be reduced than original one, or not easy-to
+     read file.
+
+     It's fairly infrequently occurred, but converting might not be
+     finished with wrong run of ImageMagick's convert command.  Please
+     stop to covert and retry it.
+
+AUTHOR
+     E-Mail: n-miyo@tempus.org
+     Twitter: nmiyo
+     Blog: http://blogger.tempus.org/
+
+; EOF
