@@ -67,7 +67,7 @@ EOM
 EOM
     fi
     cat<<EOM 1>&2
-  -c            copy if covert finished.
+  -c            copy if convert finished.
   -e            eject if copy finished.
   -o            overwrite output-pdf if already exits.
   -t            try to trim extra space.
