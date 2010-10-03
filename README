@@ -3,7 +3,7 @@
 ------------------------------------------------------------
 
 NAME
-     kdconv -- PDF optimizer for Kindle2/DX.
+     kdconv -- PDF optimizer for Kindle2/3/DX.
 
 SYNOPSIS
      kdconv [-a author] [-ceotdK] input-pdf output-pdf
@@ -16,14 +16,14 @@ DESCRIPTION
      kdconv is a program for converting a PDF document into a Kindle
      friendly format.
 
-     Kindle2 can display PDF documents, but, especially if the file
+     Kindle2/3 can display PDF documents, but, especially if the file
      contains data as image format, it is hard to display correctly in
      some image size.  This program converts a PDF document which is
      specified as input-pdf into Kindle friendly size and easy-to-read
      effects, then it produces the result as output-pdf.  Usually this
      process reduces the file size.
 
-     Kindle2 uses PDF file name which is eliminated tail .pdf as the
+     Kindle2/3 uses PDF file name which is eliminated tail .pdf as the
      title name, so you should specify output-pdf with conscious this
      behavior.
 
@@ -124,6 +124,14 @@ BUGS
      It's fairly infrequently occurred, but converting might not be
      finished with wrong run of ImageMagick's convert command.  Please
      stop to covert and retry it.
+
+SPECIAL THANKS
+     I appreciate follow people who contribute useful information
+     and/or patch for enhancing script.
+
+     Noriaki Mitsunaga-san:
+     - sends me useful patch for making the script generalize and
+       more comfortable resolution information for Kindle 2/3.
 
 AUTHOR
      E-Mail: n-miyo@tempus.org

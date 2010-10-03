@@ -3,7 +3,7 @@
 ------------------------------------------------------------
 
 NAME
-     kdconv -- PDF optimizer for Kindle2/DX.
+     kdconv -- PDF optimizer for Kindle2/3/DX.
 
 SYNOPSIS
      kdconv [-a author] [-ceotdK] input-pdf output-pdf
@@ -13,16 +13,16 @@ PLATFORM
      - Kindle2(KindledDX は未検証)
 
 DESCRIPTION
-     kdconv は PDF を Kindle2 で読みやすいサイズへ変換する為のプログラムです。
+     kdconv は PDF を Kindle2/3 で読みやすいサイズへ変換する為のプログラムです。
 
-     Kindle2 では PDF を表示出来ますが、特にデータが画像ファイルとして埋め込ま
-     れたファイルの場合、サイズによっては綺麗に表示されないことがあります。この
-     プログラムでは、input-pdf で指定された PDF を、Kindle2 に適したサイズへ変
-     換し、視認性を高めた後 output-pdf として出力します。また、一般的にファイル
-     サイズを小さくする効果もあります。
+     Kindle2/3 では PDF を表示出来ますが、特にデータが画像ファイルとして埋め込
+     まれたファイルの場合、サイズによっては綺麗に表示されないことがあります。こ
+     のプログラムでは、input-pdf で指定された PDF を、Kindle2/3 に適したサイズ
+     へ変換し、視認性を高めた後 output-pdf として出力します。また、一般的にファ
+     イルサイズを小さくする効果もあります。
 
-     Kindle2 では、PDF ファイル名末尾の .pdf を除去した値がタイトル名として使用
-     されますので、それを意識して output-pdf を指定すると便利です。
+     Kindle2/3 では、PDF ファイル名末尾の .pdf を除去した値がタイトル名として使
+     用されますので、それを意識して output-pdf を指定すると便利です。
 
      pdftk がインストールされている環境では output-pdf から、末尾の .pdf を除去
      した値を、PDFのタイトルメタデータとして書きこみます。また、オプションを指
@@ -112,6 +112,14 @@ BUGS
 
      稀に ImageMagick の convert が暴走し、変換が終了しない場合があります。
      この場合には再度変換をやり直してみてください。
+
+SPECIAL THANKS
+     以下の方々から有益なご指摘やパッチを頂き、より使いやすいスクリプトにする
+     ことが出来ました。感謝いたします。
+
+     Noriaki Mitsunaga さん:
+     - script をより汎用化する方法、ならびに、Kindle2/3 でより綺麗に表示する解
+       像度設定を教えてくださいました。
 
 AUTHOR
      E-Mail: n-miyo@tempus.org
