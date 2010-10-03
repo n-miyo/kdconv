@@ -167,7 +167,7 @@ parseopt()
 	PAPERSIZE_X=${PAPERSIZE_DX_X}
 	PAPERSIZE_Y=${PAPERSIZE_DX_Y}
     fi
-    TITLE=`basename -s .pdf "${DSTFILE}"`
+    TITLE=${DSTFILE%.pdf}
 }
 
 slice()
@@ -193,7 +193,7 @@ conv()
 
     for i in *.jpg; do
 	/bin/echo -n '.'
-	out=`basename -s .jpg ${i}`.pdf
+	out=${i%.jpg}.pdf
 	rm -f ${out}
 	convert \
 	    ${i} \
