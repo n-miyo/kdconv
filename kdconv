@@ -44,6 +44,7 @@ PAPERSIZE_X=560
 PAPERSIZE_Y=735
 PAPERSIZE_DX_X=784
 PAPERSIZE_DX_Y=1142
+JOINPY=/System/Library/Automator/Combine\ PDF\ Pages.action/Contents/Resources/join.py
 
 OPTIONS="a:ceotdvDKh"
 PROGNAME=`basename $0`
@@ -226,7 +227,7 @@ InfoValue: ${AUTHOR}
 EOF
 	cat *.pdf | pdftk - output - | pdftk - update_info PDF_INFO output - > "${DSTFILE}"
     else
-	/System/Library/Automator/Combine\ PDF\ Pages.action/Contents/Resources/join.py --output "${DSTFILE}" *.pdf
+	"${JOINPY}" --output "${DSTFILE}" *.pdf
     fi
 }
 
