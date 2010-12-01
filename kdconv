@@ -225,7 +225,7 @@ InfoValue: ${TITLE}
 InfoKey: Author
 InfoValue: ${AUTHOR}
 EOF
-	cat *.pdf | pdftk - output - | pdftk - update_info PDF_INFO output - > "${DSTFILE}"
+	cat *.pdf | pdftk - update_info PDF_INFO output - > "${DSTFILE}"
     else
 	"${JOINPY}" --output "${DSTFILE}" *.pdf
     fi
