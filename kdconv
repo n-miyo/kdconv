@@ -224,7 +224,7 @@ InfoValue: ${TITLE}
 InfoKey: Author
 InfoValue: ${AUTHOR}
 EOF
-	pdftk *.pdf output - | pdftk - update_info PDF_INFO output "${DSTFILE}"
+	cat *.pdf | pdftk - output - | pdftk - update_info PDF_INFO output - > "${DSTFILE}"
     else
 	/System/Library/Automator/Combine\ PDF\ Pages.action/Contents/Resources/join.py --output "${DSTFILE}" *.pdf
     fi
