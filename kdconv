@@ -93,6 +93,11 @@ err()
     exit ${_status}
 }
 
+warn()
+{
+    echo "${PROGNAME}: $@" 1>&2
+}
+
 create_workdir()
 {
     WORKDIR=`mktemp -dt ${PROGNAME}.XXXXXXXXXX`
@@ -168,7 +173,7 @@ parseopt()
     [ ${OVERWRITE} -eq 1 -o ! -e "${DSTFILE}" ] \
       || err 1 "Already exist: ${DSTFILE}"
     if [ ! -d "${KINDLEDOCPATH}" ]; then
-	echo "${PROGNAME}: Warning: Kindle is not connected." 1>&2
+	warn "Warning: Kindle is not connected."
 	COPY=0
     else
         KINDLEDOCPATH=$(cd "$KINDLEDOCPATH" && pwd)
@@ -247,7 +252,7 @@ copy()
 
     [ ${COPY} -eq 1 ] || return
     if [ ${OVERWRITE} -eq 0 -a -e "${KINDLEDOCPATH}/${_target}" ]; then
-	echo "${PROGNAME}: Warning: Already exist on Kindle: ${_target}" 1>&2
+	warn "Warning: Already exist on Kindle: ${_target}" 1>&2
 	return
     fi
 
