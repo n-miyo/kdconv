@@ -6,7 +6,7 @@ NAME
      kdconv -- PDF optimizer for Kindle2/3/DX.
 
 SYNOPSIS
-     kdconv [-a author] [-ceotdK] input-pdf output-pdf
+     kdconv [-a author] [-cdeotv] [-p kindledir] input-pdf output-pdf
 
 PLATFORM
      - MacOS X 10.6 and later(earlier version is not tested)
@@ -81,6 +81,8 @@ OPTIONS
              output-pdf contains directory name, this options uses the
              file name part of it only.
 
+      -d     Convert to KindleDX friendly size.
+
       -e     After copy is finished, this program tries to eject Kindle
              automatically.  Without -c option, this option has no
              effect.
@@ -90,14 +92,14 @@ OPTIONS
              and if a file which has same name already exists, this
              program stops with error messages.
 
+      -p     Set path for 'documents' directory of Kindle.  Default
+             value is '/Volumes/Kindle/documents'.
+
       -t     Tries to eliminate extra space around the input-pdf.
              Trimmed area will be decided based on corner pixels
              color.
 
-      -d     Convert to KindleDX friendly size.
-
       -v     Show version.
-
 
 EXAMPLES
      Convert foo.pdf to bar.pdf:
@@ -132,6 +134,10 @@ SPECIAL THANKS
      Noriaki Mitsunaga-san:
      - sends me useful patch for making the script generalize and
        more comfortable resolution information for Kindle 2/3.
+
+     @toplut-san:
+     - inform me that output method of pdftk does not treat non-ascii
+       character filename.
 
 AUTHOR
      E-Mail: n-miyo@tempus.org
