@@ -172,11 +172,13 @@ parseopt()
     DSTFILE=$(cd "$(dirname "${2}")" && pwd)/$(basename "${2}")
     [ ${OVERWRITE} -eq 1 -o ! -e "${DSTFILE}" ] \
       || err 1 "Already exist: ${DSTFILE}"
-    if [ ! -d "${KINDLEDOCPATH}" ]; then
-	warn "Warning: Kindle is not connected."
-	COPY=0
-    else
-        KINDLEDOCPATH=$(cd "$KINDLEDOCPATH" && pwd)
+    if [ ${COPY} -eq 1 ]; then
+	if [ ! -d "${KINDLEDOCPATH}" ]; then
+	    warn "Warning: Kindle is not connected."
+	    COPY=0
+	else
+            KINDLEDOCPATH=$(cd "$KINDLEDOCPATH" && pwd)
+	fi
     fi
 
     if [ ${DX} -eq 1 ]; then
