@@ -122,6 +122,7 @@ prepare()
 
 parseopt()
 {
+    local _dstbase
     while getopts ${OPTIONS} opt "$@"; do
 	case ${opt} in
 	    a)
@@ -185,7 +186,8 @@ parseopt()
 	PAPERSIZE_X=${PAPERSIZE_DX_X}
 	PAPERSIZE_Y=${PAPERSIZE_DX_Y}
     fi
-    TITLE=${DSTFILE%.pdf}
+    _dstbase=$(basename "${2}")
+    TITLE=${_dstbase%.pdf}
 }
 
 slice()
