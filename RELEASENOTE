@@ -1,0 +1,28 @@
+------------------------------------------------------------
+			RELEASENOTE
+------------------------------------------------------------
+
+v1.0.3 (2010/12/12)
+- support Sony reader.
+- fix bug: enable to process multi-pages file.
+  - this bug is embedded in v1.0.2 release.
+- eliminate directory part from PDF's TITLE metadata.
+
+
+v1.0.2 (2010/10/03)
+- support multi-byte character output file name.
+  - Thanks to @toplut.
+- enable to change kindle document path.
+
+
+v1.0.1 (2010/10/03)
+- optimize kindle x/y resolution size.
+  - Thanks to Noriaki Mitsunaga.
+- fix mktmp arguments bug.  Now multiple kdconv processes
+  can run at the same time.
+
+
+v1.0.0 (2010/04/15)
+- initial release.
+
+; EOF
