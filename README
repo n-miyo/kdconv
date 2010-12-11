@@ -3,29 +3,32 @@
 ------------------------------------------------------------
 
 NAME
-     kdconv -- PDF optimizer for Kindle2/3/DX.
+     kdconv -- PDF optimizer for Kindle2/3/Sony Reader.
 
 SYNOPSIS
-     kdconv [-a author] [-cdeotv] [-p kindledir] input-pdf output-pdf
+     kdconv [-a author] [-ce] [-f deviceformat] [-o]
+            [-p devicedoc] [-tv] input-pdf output-pdf
 
 PLATFORM
      - MacOS X 10.6 and later(earlier version is not tested)
-     - Kindle2(KindleDX is not tested.)
+     - Kindle2/3(KindleDX is not tested.)
+     - Sony Reader PRS-350
 
 DESCRIPTION
      kdconv is a program for converting a PDF document into a Kindle
-     friendly format.
+     and/or Sony Reader(PRS-350) friendly format.
 
-     Kindle2/3 can display PDF documents, but, especially if the file
-     contains data as image format, it is hard to display correctly in
-     some image size.  This program converts a PDF document which is
-     specified as input-pdf into Kindle friendly size and easy-to-read
-     effects, then it produces the result as output-pdf.  Usually this
-     process reduces the file size.
+     Kindle2/3 and Sony Reader can display PDF documents, but,
+     especially if the file contains data as image format, it is hard
+     to display correctly in some image size.  This program converts a
+     PDF document which is specified as 'input-pdf' into Kindle
+     friendly size and easy-to-read effects, then it produces the
+     result as 'output-pdf'.  Usually this process reduces the file
+     size.
 
-     Kindle2/3 uses PDF file name which is eliminated tail .pdf as the
-     title name, so you should specify output-pdf with conscious this
-     behavior.
+     Kindle2/3 and Sony Reader uses PDF file name which is eliminated
+     tail .pdf as the title name, so you should specify output-pdf
+     with conscious this behavior.
 
      If pdftk is installed in your environment, this program uses pdftk
      to embed title meta data into the PDF, which is generated from
@@ -34,7 +37,7 @@ DESCRIPTION
      will be shown as an author at the file list of Kindle.
 
      In addition, you can eliminate extra space, and transfer the file
-     into Kindle automatically.
+     into Kindle2/3 or Sony Reader automatically.
 
      This program can convert the input-pdf to KindleDX friendly, but
      this function is not tested because of not my having it.
@@ -81,19 +84,21 @@ OPTIONS
              output-pdf contains directory name, this options uses the
              file name part of it only.
 
-      -d     Convert to KindleDX friendly size.
-
       -e     After copy is finished, this program tries to eject Kindle
              automatically.  Without -c option, this option has no
              effect.
+
+      -f     Set target device.  Valid values are 'kindle', 'kindledx'
+             and 'sonyreader'.  Default value is 'kindle'.
 
       -o     In spite of already existing output-pdf file, this option
              allows to overwrite it.  If you do not specify this option,
              and if a file which has same name already exists, this
              program stops with error messages.
 
-      -p     Set path for 'documents' directory of Kindle.  Default
-             value is '/Volumes/Kindle/documents'.
+      -p     Set path for 'documents' directory of Kindle or READER
+             directory for Sony Reader.  Default value is decided from
+             '-f' option's value.
 
       -t     Tries to eliminate extra space around the input-pdf.
              Trimmed area will be decided based on corner pixels

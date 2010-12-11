@@ -3,33 +3,38 @@
 ------------------------------------------------------------
 
 NAME
-     kdconv -- PDF optimizer for Kindle2/3/DX.
+     kdconv -- PDF optimizer for Kindle2/3/Sony Reader.
 
 SYNOPSIS
-     kdconv [-a author] [-cdeotv] [-p kindledir] input-pdf output-pdf
+     kdconv [-a author] [-ce] [-f deviceformat] [-o]
+            [-p devicedoc] [-tv] input-pdf output-pdf
 
 PLATFORM
      - MacOS X 10.6以上(それ以前は未検証)
-     - Kindle2(KindledDX は未検証)
+     - Kindle2/3(KindledDX は未検証)
+     - Sony Reader PRS-350
 
 DESCRIPTION
-     kdconv は PDF を Kindle2/3 で読みやすいサイズへ変換する為のプログラムです。
+     kdconv は PDF を Kindle2/3、Sony Reader(PRS-350)で読みやすいサイズへ変換
+     する為のプログラムです。
 
-     Kindle2/3 では PDF を表示出来ますが、特にデータが画像ファイルとして埋め込
-     まれたファイルの場合、サイズによっては綺麗に表示されないことがあります。こ
-     のプログラムでは、input-pdf で指定された PDF を、Kindle2/3 に適したサイズ
-     へ変換し、視認性を高めた後 output-pdf として出力します。また、一般的にファ
-     イルサイズを小さくする効果もあります。
+     Kindle2/3、Sony Reader では PDF を表示出来ますが、特にデータが画像ファイル
+     として埋め込まれたファイルの場合、サイズによっては綺麗に表示されないことが
+     あります。このプログラムでは、input-pdf で指定された PDF を、Kindle2/3、
+     Sony Reader に適したサイズへ変換し、視認性を高めた後 output-pdf として出力
+     します。また、一般的にファイルサイズを小さくする効果もあります。
 
-     Kindle2/3 では、PDF ファイル名末尾の .pdf を除去した値がタイトル名として使
-     用されますので、それを意識して output-pdf を指定すると便利です。
+     Kindle2/3、Sony Reader では、PDF ファイル名末尾の .pdf を除去した値がタイ
+     トル名として使用されますので、それを意識して output-pdf を指定すると便利で
+     す。
 
      pdftk がインストールされている環境では output-pdf から、末尾の .pdf を除去
      した値を、PDFのタイトルメタデータとして書きこみます。また、オプションを指
      定することにより、作成者を書きこむことも可能です。作成者名を書き込むと、そ
      の値が Kindle のファイル一覧画面で、作者名として表示されます。
 
-     加えて、余白を取り除く機能や自動的に Kindle へ転送したりすることも可能です。
+     加えて、余白を取り除く機能や自動的に Kindle2/3、Sony Reader へ転送したりす
+     ることも可能です。
 
      KindleDX 向けに適したサイズへ変換することもできますが、実機をもっていない
      ため、動作確認出来ていません。
@@ -74,17 +79,20 @@ OPTIONS
              ouput-pdf へディレクトリ名が含まれている場合でも、コピー時にはファ
              イル名のみが利用されます。
 
-     -d      KindleDX に適したサイズへ変換します。
-
      -e      コピー終了後、Kindle を自動で eject します。-c オプションが付与さ
              れていない場合には意味を持ちません。
+
+     -f      変換対象デバイスを指定します。指定可能な値は、kindle、kindledx、
+             sonyreader です。本オプションが指定されない場合のデフォルト値は、
+             kindle です。
 
      -o      output-pdf で指定されたファイルが既に存在している場合、そのファイ
              ルの上書きを許可します。このオプションが指定されていない場合、同
              名のファイルが既に存在した場合には、エラーとなります。
 
-     -p      Kindle の documents ディレクトリのあるパスを指定します。デフォル
-             ト値は /Volumes/Kindle/documents です。
+     -p      Kindle2/3 の documents ディレクトリのあるパス、または Sony Reader
+             の READER ディレクトリ指定します。デフォルト値は -f の値に依って
+             決定されます。
 
      -t      元ファイルの周辺にある余白を除去しようと試みます。ファイル四隅の
              色を基準に除去領域を判断します。
