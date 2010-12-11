@@ -32,21 +32,29 @@ VERSION=1.0.2
 COPY=${KDCONV_COPY:-0}
 OVERWRITE=${KDCONV_OVERWRITE:-0}
 EJECT=${KDCONV_EJECT:-0}
-KINDLEDOCPATH=${KDCONV_KINDLEDOCPATH:-/Volumes/Kindle/documents}
-DX=${KDCONV_DX:-0}
+DEVICEDOCPATH=${KDCONV_KINDLEDOCPATH:-} # obsolete
+DEVICEDOCPATH=${KDCONV_DEVICEDOCPATH:-}
+DX=${KDCONV_DX:-0}		# obsolete
+DEVICETYPE=${KDCONV_DEVICETYPE:-kindle}
 KEEPWORKDIR=${KDCONV_KEEPWORKDIR:-0}
 TRIM=${KDCONV_TRIM:-0}
 DEBUG=${KDCONV_DEBUG:-0}
 
 GS_DPI=300
 PDF_DPI=96
-PAPERSIZE_X=560
-PAPERSIZE_Y=735
-PAPERSIZE_DX_X=784
-PAPERSIZE_DX_Y=1142
 JOINPY=/System/Library/Automator/Combine\ PDF\ Pages.action/Contents/Resources/join.py
 
-OPTIONS="a:cdeop:tvDKh"
+KINDLE_PAPERSIZE_X=584
+KINDLE_PAPERSIZE_Y=754
+KINDLE_DEVICEPATH=/Volumes/Kindle/documents
+KINDLEDX_PAPERSIZE_X=784
+KINDLEDX_PAPERSIZE_Y=1142
+KINDLEDX_DEVICEPATH=/Volumes/Kindle/documents
+SONYREADER_PAPERSIZE_X=560
+SONYREADER_PAPERSIZE_Y=735
+SONYREADER_DEVICEPATH=/Volumes/READER
+
+OPTIONS="a:cef:op:tvDKhd"
 PROGNAME=`basename $0`
 PDFTK=1
 
@@ -64,17 +72,17 @@ Usage: ${PROGNAME} [OPTION] input-pdf output-pdf
 EOM
     if [ ${PDFTK} -eq 1 ]; then
 	cat<<EOM 1>&2
-  -a <AUTHOR>    set PDF author
+  -a <AUTHOR>       set PDF author
 EOM
     fi
     cat<<EOM 1>&2
-  -c             copy if convert finished.
-  -e             eject if copy finished.
-  -o             overwrite output-pdf if already exits.
-  -p <KINDLEDIR> Kindle doc directory path.
-  -t             try to trim extra space.
-  -d             convert to Kindle DX.
-  -v             show version
+  -c                copy if convert finished.
+  -e                eject if copy finished.
+  -f <DEVICEFORMAT> set format type. {kindle|kindledx|sonyreader}
+  -o                overwrite output-pdf if already exits.
+  -p <DEVICEDOCDIR> Kindle doc directory path.
+  -t                try to trim extra space.
+  -v                show version
 EOM
 }
 
@@ -118,6 +126,9 @@ prepare()
 	PDFTK=0
 	OPTIONS=`echo ${OPTIONS} | sed 's/a//'`
     fi
+    if [ ${DX} -eq 1 ]; then
+	DEVICETYPE="kindledx"
+    fi
 }
 
 parseopt()
@@ -138,13 +149,13 @@ parseopt()
 		OVERWRITE=1
 		;;
             p)
-		KINDLEDOCPATH="${OPTARG}"
+		DEVICEDOCPATH="${OPTARG}"
 		;;
             t)
 		TRIM=1
 		;;
-            d)
-		DX=1
+            f)
+		DEVICETYPE="${OPTARG}"
 		;;
             v)
 		version
@@ -155,6 +166,10 @@ parseopt()
 		;;
             K)
 		KEEPWORKDIR=1
+		;;
+            d)
+		warn "Warning: -d option is obsolete.  try to use -f"
+		DEVICETYPE="kindledx"
 		;;
 	    *)
 		usage; exit 0
@@ -168,24 +183,41 @@ parseopt()
         exit 2
     fi
 
+    case ${DEVICETYPE} in
+	kindle)
+	    PAPERSIZE_X=${KINDLE_PAPERSIZE_X}
+	    PAPERSIZE_Y=${KINDLE_PAPERSIZE_Y}
+	    [ ${DEVICEDOCPATH}x = x ] && DEVICEDOCPATH=${KINDLE_DEVICEPATH}
+	    ;;
+	kindledx)
+	    PAPERSIZE_X=${KINDLEDX_PAPERSIZE_X}
+	    PAPERSIZE_Y=${KINDLEDX_PAPERSIZE_Y}
+	    [ ${DEVICEDOCPATH}x = x ] && DEVICEDOCPATH=${KINDLEDX_DEVICEPATH}
+	    ;;
+	sonyreader)
+	    PAPERSIZE_X=${SONYREADER_PAPERSIZE_X}
+	    PAPERSIZE_Y=${SONYREADER_PAPERSIZE_Y}
+	    [ ${DEVICEDOCPATH}x = x ] && DEVICEDOCPATH=${SONYREADER_DEVICEPATH}
+	    ;;
+	*)
+	    err 1 "Unsupported format type: ${DEVICETYPE}"
+	    ;;
+    esac
+
     SRCFILE=$(cd "$(dirname "${1}")" && pwd)/$(basename "${1}")
     [ -e "${SRCFILE}" ] || err 1 "No such file: ${SRCFILE}"
     DSTFILE=$(cd "$(dirname "${2}")" && pwd)/$(basename "${2}")
     [ ${OVERWRITE} -eq 1 -o ! -e "${DSTFILE}" ] \
       || err 1 "Already exist: ${DSTFILE}"
     if [ ${COPY} -eq 1 ]; then
-	if [ ! -d "${KINDLEDOCPATH}" ]; then
+	if [ ! -d "${DEVICEDOCPATH}" ]; then
 	    warn "Warning: Kindle is not connected."
 	    COPY=0
 	else
-            KINDLEDOCPATH=$(cd "$KINDLEDOCPATH" && pwd)
+            DEVICEDOCPATH=$(cd "$DEVICEDOCPATH" && pwd)
 	fi
     fi
 
-    if [ ${DX} -eq 1 ]; then
-	PAPERSIZE_X=${PAPERSIZE_DX_X}
-	PAPERSIZE_Y=${PAPERSIZE_DX_Y}
-    fi
     _dstbase=$(basename "${2}")
     TITLE=${_dstbase%.pdf}
 }
@@ -255,12 +287,12 @@ copy()
     local _target=`basename ${DSTFILE}`
 
     [ ${COPY} -eq 1 ] || return
-    if [ ${OVERWRITE} -eq 0 -a -e "${KINDLEDOCPATH}/${_target}" ]; then
+    if [ ${OVERWRITE} -eq 0 -a -e "${DEVICEDOCPATH}/${_target}" ]; then
 	warn "Warning: Already exist on Kindle: ${_target}" 1>&2
 	return
     fi
 
-    cp "${DSTFILE}" "${KINDLEDOCPATH}"/
+    cp "${DSTFILE}" "${DEVICEDOCPATH}"/
     [ ${EJECT} -eq 1 ] || return
     diskutil eject /Volumes/Kindle
 }
@@ -281,7 +313,7 @@ COPY: ${COPY}
 EJECT: ${EJECT}
 OVERWRITE: ${OVERWRITE}
 KEEPWORKDIR: ${KEEPWORKDIR}
-KINDLEDOCPATH: ${KINDLEDOCPATH}
+DEVICEDOCPATH: ${DEVICEDOCPATH}
 PDFTK: ${PDFTK}
 EOF
 }
