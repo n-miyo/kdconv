@@ -108,7 +108,7 @@ warn()
 
 create_workdir()
 {
-    WORKDIR=`mktemp -d ${PROGNAME}.XXXXXXXXXX`
+    WORKDIR=`mktemp -td ${PROGNAME}.XXXXXXXXXX`
     [ $? -eq 0 ] || err 1 "Can't create temp dir"
 }
 
