@@ -67,7 +67,7 @@ AUTHOR=''
 usage()
 {
     cat<<EOM 1>&2
-Usage: ${PROGNAME} [OPTION] input-pdf output-pdf
+usage: ${PROGNAME} [OPTION] input-pdf output-pdf
 
 EOM
     if [ ${PDFTK} -eq 1 ]; then
