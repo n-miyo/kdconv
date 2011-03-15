@@ -239,7 +239,7 @@ slice()
 
 conv()
 {
-    local _papersize="${PAPERSIZE_X}x${PAPERSIZE_Y}",\
+    local _papersize="${PAPERSIZE_X}x${PAPERSIZE_Y}" \
           _opt=""
     [ ${TRIM} -eq 0 ] || _opt="-fuzz 45% -trim +repage"
 
