@@ -260,6 +260,7 @@ conv()
 	    -fill gray \
 	    -draw 'point 0,0' \
 	    -draw "point $((${PAPERSIZE_X}-1)),$((${PAPERSIZE_Y}-1))" \
+	    -page ${_papersize} \
 	    ${out}
     done
     echo ''
