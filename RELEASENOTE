@@ -2,6 +2,13 @@
 			RELEASENOTE
 ------------------------------------------------------------
 
+v1.0.4 (2011/03/16)
+- fix bug: enable to trim the margin correctly for KindleDX.
+- fix bug: enable to create tmpdir on MacOS X.
+  - Thanks to cinq.
+- support -b option, which can generate bi-level document.
+
+
 v1.0.3 (2010/12/12)
 - support Sony reader.
 - fix bug: enable to process multi-pages file.
