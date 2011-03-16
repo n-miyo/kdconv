@@ -28,7 +28,7 @@
 
 VERSION=1.0.3
 
-BLACKANDWHITE=${KDCONV_BLACKANDWHITE:-0}
+BILEVEL=${KDCONV_BILEVEL:-0}
 COPY=${KDCONV_COPY:-0}
 OVERWRITE=${KDCONV_OVERWRITE:-0}
 EJECT=${KDCONV_EJECT:-0}
@@ -141,7 +141,7 @@ parseopt()
 		AUTHOR="${OPTARG}"
 		;;
             b)
-		BLACKANDWHITE=1
+		BILEVEL=1
 		;;
             c)
 		COPY=1
@@ -246,7 +246,7 @@ conv()
     local _papersize="${PAPERSIZE_X}x${PAPERSIZE_Y}" _trim="" \
           _imagetype="Grayscale"
     [ ${TRIM} -eq 0 ] || _trim="-fuzz 65% -trim +repage"
-    [ ${BLACKANDWHITE} -eq 0 ] || _imagetype="Bilevel"
+    [ ${BILEVEL} -eq 0 ] || _imagetype="Bilevel"
 
     for i in *.jpg; do
 	/bin/echo -n '.'
@@ -315,7 +315,7 @@ PAPERSIZE_X: ${PAPERSIZE_X}
 PAPERSIZE_Y: ${PAPERSIZE_Y}
 TITLE: ${TITLE}
 AUTHOR: ${AUTHOR}
-BLACKANDWHITE: ${BLACKANDWHITE}
+BILEVEL: ${BILEVEL}
 COPY: ${COPY}
 EJECT: ${EJECT}
 OVERWRITE: ${OVERWRITE}
