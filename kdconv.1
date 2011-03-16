@@ -1,0 +1,169 @@
+.\"-
+.\" Copyright (c) 2010-2011 MIYOKAWA, Nobuyoshi.  All rights reserved.
+.\"
+.\" Redistribution and use in source and binary forms, with or without
+.\" modification, are permitted provided that the following conditions
+.\" are met:
+.\"
+.\" 1. Redistributions of source code must retain the above copyright
+.\"    notice, this list of conditions and the following disclaimer.
+.\" 2. Redistributions in binary form must reproduce the above copyright
+.\"    notice, this list of conditions and the following disclaimer in the
+.\"    documentation and/or other materials provided with the distribution.
+.\"
+.\" THIS SOFTWARE IS PROVIDED BY THE AUTHORS ''AS IS'' AND ANY EXPRESS
+.\" OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+.\" WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+.\" ARE DISCLAIMED.  IN NO EVENT SHALL THE AUTHORS OR CONTRIBUTORS BE
+.\" LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
+.\" OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT
+.\" OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR
+.\" BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+.\" WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
+.\" OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
+.\" EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+.\"
+.Dd March 16, 2011
+.Dt KDCONV 1
+.Os
+.Sh NAME
+.Nm kdconv
+.Nd PDF optimizer for Kindle2/3/Sony Reader.
+.Sh SYNOPSIS
+.Nm kdconv
+.Op Fl a Ar author
+.Op Fl bce
+.Op Fl f Ar deviceformat
+.Op Fl o
+.Op Fl p Ar devicedoc
+.Op Fl tv
+.Ar input-pdf output-pdf
+.Sh DESCRIPTION
+.Nm kdconv
+is a program for converting a PDF document into a Kindle and/or Sony
+Reader(PRS-350) friendly format.
+.Pp
+It converts
+.Ar input-pdf
+file and outputs as
+.Ar output-pdf .
+Some devices use
+.Ar output-pdf
+filename with eliminating
+.Sq .pdf
+suffix as the title name of the book, so you should aware of the
+behavior.
+.Pp
+If
+.Xr pdftk 1
+is installed in your environment, this program tries to embed
+.Ar output-pdf
+file name as title meta data into the PDF with eliminating
+.Sq .pdf
+suffix.
+.Sh OPTIONS
+.Bl -tag -width Ds
+.It Fl a Ar AUTHOR
+Set PDF's creator.  Kindle uses this value as an author.  This option is
+available if
+.Xr pdftk 1
+is installed.
+.It Fl b
+Output as bi-level(1-bit monochrome) format.  It might be useful if you'd
+like to process bi-level format
+.Ar input-pdf .
+.It Fl c
+After PDF convert is finished, the converted file will be transferred
+into Kindle documents directory.  You have to connect Kindle into your
+Mac beforehand.  If Kindle is not connected, do nothing with showing
+warning.  If
+.Ar output-pdf
+contains directory name, this options uses the filename part of it
+only.
+.It Fl e
+After copy is finished, this program tries to eject Kindle
+automatically.  Without
+.Fl c
+option, this option has no effect.
+.It Fl f
+Set target device.  Possible values are
+.Dq kindle ,
+.Dq kindledx
+and
+.Dq sonyreader .
+Default value is
+.Dq kindle .
+.It Fl o
+In spite of already existing
+.Ar output-pdf
+file, this option allows to overwrite it.  If you do not specify this
+option, and if a file which has same name already exists, this program
+stops with error messages.
+.It Fl p
+Set path for
+.Sq documents
+directory of Kindle or
+.Sq READER
+directory for Sony Reader.  Default value is decided from
+.Fl f
+option value.
+.It Fl t
+Tries to eliminate extra space around the
+.Ar input-pdf .
+Trimmed area will be decided based on corner pixels color.
+.It Fl v
+Show version.
+.El
+.Sh EXAMPLES
+Convert
+.Dq foo.pdf
+to
+.Dq bar.pdf
+for Kindle2/3:
+.Pp
+.Dl $ kdconv foo.pdf bar.pdf
+.Pp
+Convert
+.Dq sample.pdf
+to
+.Dq My document.pdf
+and copy it to Kindle automatically, then eject Kindle:
+.Pp
+.Dl $ kdconv -c -e sample.pdf My\e document.pdf
+.Pp
+Convert
+.Dq 1.pdf
+to
+.Dq out.pdf
+with trimming extra space, and allow to overwrite it if
+.Dq out.pdf
+already exists:
+.Pp
+.Dl $ kdconv -t -o 1.pdf out.pdf
+.Sh BUGS
+Please report bugs to below
+.Sx AUTHOR
+section's address.
+.Pp
+If an original PDF is created with vector format data, generated file's
+view area will be reduced than original one, or not easy-to read file.
+.Pp
+It's fairly infrequently occurred, but converting might not be finished
+with wrong run of ImageMagick's convert command.  Please stop to covert
+and retry it.
+.Sh SPECIAL THANKS
+I appreciate follow people who contribute useful information and/or
+patch for enhancing script.
+.Pp
+Noriaki Mitsunaga-san, @toplut-san, cinq-san.
+.Sh AUTHOR
+.An "MIYOKAWA, Nobuyoshi"
+.Pp
+.Bl -tag -width 'E-Mail' -compact -offset
+.It E-Mail :
+.Aq n-miyo@tempus.org
+.It Twitter :
+nmiyo
+.It Blog :
+http://blogger.tempus.org/
+.El

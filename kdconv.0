@@ -1,0 +1,94 @@
+KDCONV(1)		  BSD General Commands Manual		     KDCONV(1)
+
+NAME
+     kdconv -- PDF optimizer for Kindle2/3/Sony Reader.
+
+SYNOPSIS
+     kdconv [-a author] [-bce] [-f deviceformat] [-o] [-p devicedoc] [-tv]
+	    input-pdf output-pdf
+
+DESCRIPTION
+     kdconv is a program for converting a PDF document into a Kindle and/or
+     Sony Reader(PRS-350) friendly format.
+
+     It converts input-pdf file and outputs as output-pdf.  Some devices use
+     output-pdf filename with eliminating `.pdf' suffix as the title name of
+     the book, so you should aware of the behavior.
+
+     If pdftk(1) is installed in your environment, this program tries to embed
+     output-pdf file name as title meta data into the PDF with eliminating
+     `.pdf' suffix.
+
+OPTIONS
+     -a AUTHOR
+	     Set PDF's creator.  Kindle uses this value as an author.  This
+	     option is available if pdftk(1) is installed.
+
+     -b      Output as bi-level(1-bit monochrome) format.  It might be useful
+	     if you'd like to process bi-level format input-pdf.
+
+     -c      After PDF convert is finished, the converted file will be trans-
+	     ferred into Kindle documents directory.  You have to connect Kin-
+	     dle into your Mac beforehand.  If Kindle is not connected, do
+	     nothing with showing warning.  If output-pdf contains directory
+	     name, this options uses the filename part of it only.
+
+     -e      After copy is finished, this program tries to eject Kindle auto-
+	     matically.  Without -c option, this option has no effect.
+
+     -f      Set target device.  Possible values are ``kindle'', ``kindledx''
+	     and ``sonyreader''.  Default value is ``kindle''.
+
+     -o      In spite of already existing output-pdf file, this option allows
+	     to overwrite it.  If you do not specify this option, and if a
+	     file which has same name already exists, this program stops with
+	     error messages.
+
+     -p      Set path for `documents' directory of Kindle or `READER' direc-
+	     tory for Sony Reader.  Default value is decided from -f option
+	     value.
+
+     -t      Tries to eliminate extra space around the input-pdf.  Trimmed
+	     area will be decided based on corner pixels color.
+
+     -v      Show version.
+
+EXAMPLES
+     Convert ``foo.pdf'' to ``bar.pdf'' for Kindle2/3:
+
+	   $ kdconv foo.pdf bar.pdf
+
+     Convert ``sample.pdf'' to ``My document.pdf'' and copy it to Kindle auto-
+     matically, then eject Kindle:
+
+	   $ kdconv -c -e sample.pdf My\ document.pdf
+
+     Convert ``1.pdf'' to ``out.pdf'' with trimming extra space, and allow to
+     overwrite it if ``out.pdf'' already exists:
+
+	   $ kdconv -t -o 1.pdf out.pdf
+
+BUGS
+     Please report bugs to below AUTHOR section's address.
+
+     If an original PDF is created with vector format data, generated file's
+     view area will be reduced than original one, or not easy-to read file.
+
+     It's fairly infrequently occurred, but converting might not be finished
+     with wrong run of ImageMagick's convert command.  Please stop to covert
+     and retry it.
+
+SPECIAL THANKS
+     I appreciate follow people who contribute useful information and/or patch
+     for enhancing script.
+
+     Noriaki Mitsunaga-san, @toplut-san, cinq-san.
+
+AUTHOR
+     MIYOKAWA, Nobuyoshi
+
+	  E-Mail:   <n-miyo@tempus.org>
+	  Twitter:  nmiyo
+	  Blog:     http://blogger.tempus.org/
+
+BSD				March 16, 2011				   BSD

@@ -1,0 +1,96 @@
+KDCONV(1)		  BSD General Commands Manual		     KDCONV(1)
+
+NAME
+     kdconv - PDF optimizer for Kindle2/3/Sony Reader.
+
+SYNOPSIS
+     kdconv [-a author] [-bce] [-f deviceformat] [-o] [-p devicedoc] [-tv]
+	    input-pdf output-pdf
+
+DESCRIPTION
+     kdconv は PDF を Kindle2/3、Sony Reader(PRS-350)で読みやすいサイズへ変換
+     する為のプログラムです。
+
+     input-pdf で指定されたファイルを変換し、 output-pdf として出力します。デ
+     バイスによっては、 output-pdf で指定されたファイル名末尾の `.pdf' を除去
+     した値を書籍のタイトル名として使用しますので、それを意識して ファイル名を
+     指定すると便利です。
+
+     pdftk(1) がインストールされている環境では output-pdf で指定されたファイル
+     名から、末尾の `.pdf' を除去した値を、PDFのタイトルメタデータとして書きこ
+     みます。
+
+OPTIONS
+     -a AUTHOR
+	     PDFの作成者を設定します。Kindle はこの値を、作者名として使用しま
+	     す。このオプションは pdftk(1) がインストールされている環境でのみ
+	     使用可能です。
+
+     -b      二値モノクロ(1ビットモノクローム)フォーマットとして出力します。
+	     input-pdf として二値モノクロフォーマットデータを指定する場合に有
+	     益です。
+
+     -c      PDF 変換終了後、変換されたファイルを Kindle のドキュメントディレ
+	     クトリへ自動転送します。Kindle は Mac へ事前に接続しておいてくだ
+	     さい。Kindle が接続されていない場合、警告を表示し、なにもしませ
+	     ん。 ouput-pdf へディレクトリ名が含まれている場合でも、コピー時に
+	     はファイル名のみが利用されます。
+
+     -e      コピー終了後、Kindle を自動でイジェクトします。 -c オプションが付
+	     与されていない場合には意味を持ちません。
+
+     -f      変換対象デバイスを指定します。指定可能な値は、 ``kindle'' 、
+	     ``kindledx'' 、 ``sonyreader'' です。本オプションが指定されない場
+	     合のデフォルト値は ``kindle'' です。
+
+     -o      output-pdf で指定されたファイルが既に存在している場合、そのファイ
+	     ルの上書きを許可します。このオプションが指定されていない場合、同
+	     名のファイルが既に存在した場合には、エラーとなります。
+
+     -p      Kindle2/3 の `documents' ディレクトリのあるパス、または Sony
+	     Reader の `READER' ディレクトリ指定します。デフォルト値は -f の値
+	     に依って決定されます。
+
+     -t      input-pdf の周辺にある余白を除去しようと試みます。ファイル四隅の
+	     色を基準に除去領域を判断します。
+
+     -v      バージョンを表示します。
+
+EXAMPLES
+     ``foo.pdf'' を Kindle2/3 用に変換し ``bar.pdf'' として出力するには:
+
+	   $ kdconv foo.pdf bar.pdf
+
+     ``sample.pdf'' を ``My document.pdf'' として変換し、自動で Kindle へコ
+     ピー、その後 Kindle をイジェクトさせるには:
+
+	   $ kdconv -c -e sample.pdf My\ document.pdf
+
+     ``1.pdf'' を ``out.pdf'' として余白を除去しながら変換し、既に存在する
+     ``out.pdf'' へ上書き出力するには:
+
+	   $ kdconv -t -o 1.pdf out.pdf
+
+BUGS
+     バグを発見された場合には、下記、 AUTHOR までご連絡ください。
+
+     もとのPDFがベクタデータで作成されている場合、生成されたファイルはもとの
+     ファイルよりも表示エリアが縮小された、または読みにくいファイルとなること
+     があります。
+
+     稀に ImageMagick の convert が暴走し、変換が終了しない場合があります。こ
+     の場合には再度変換をやり直してみてください。
+
+SPECIAL THANKS
+     以下の方々から有益なご指摘やパッチを頂き、より使いやすいスクリプトにする
+     ことが出来ました。感謝いたします。
+
+     Noriaki Mitsunaga さん、@toplut さん、cinq さん。
+
+AUTHOR
+     MIYOKAWA, Nobuyoshi
+	    E-Mail:   <n-miyo@tempus.org>
+	    Twitter:  nmiyo
+	    Blog:     http://blogger.tempus.org/
+
+BSD				March 16, 2011				   BSD
