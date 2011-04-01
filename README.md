@@ -86,6 +86,7 @@ MIYOKAWA, Nobuyoshi
 * Twitter: nmiyo
 * Blog: http://blogger.tempus.org/
 
+
 COPYRIGHT
 --------------------
 Copyright (c) 2010-2011 MIYOKAWA, Nobuyoshi.  All rights reserved.
